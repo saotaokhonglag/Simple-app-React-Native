@@ -6,23 +6,36 @@ import { useNavigation } from '@react-navigation/native'
 import { database } from '../../../firebase-config';
 import { CusCart } from './customCart';
 import { useAuth } from '../../../firebase'
+import {
+  getAuth,
+  onAuthStateChanged,
+} from 'firebase/auth';
 export function Cart({ item }) {
+  const [userid, setuserid] = useState("")
   const navigation = useNavigation();
-  const currentUser = useAuth();
-
   const [tour, setTour] = useState([])
   async function getAllData() {
-    const q = query(collection(database, "GioHang"),where("id_KhachHang","==",currentUser.uid));
-
-    const querySnapshot = await getDocs(q);
+    try {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const id = user.uid;
+          setuserid(id) 
+          alert(userid);
+        }
+      });
+      // where của câu truy vấn:  , where("IDuser", "==", userid)
+    const q = query(collection(database, "GioHang"), where("id_KhachHang", "==",userid));
+     const querySnapshot = await getDocs(q);
     let vouchers = [];
     querySnapshot.forEach(doc => {
-      vouchers.push(doc.data());
+      vouchers.push({...doc.data(), id: doc.id});
     })
     setTour(vouchers)
-    
+    } catch (error) {
+      alert(error)
+    } 
   }
-
   useEffect(() => {
     getAllData();
   }, [])
@@ -31,7 +44,7 @@ export function Cart({ item }) {
    
     let totalPrice = 0;
     tour.forEach((item) => {
-      totalPrice += item.Quantity * item.Price;
+      totalPrice += item.SoLuong * item.Gia;
     });
     return (
       <View style={styles.cartLineTotal}>

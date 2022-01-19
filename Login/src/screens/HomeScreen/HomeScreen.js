@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions,
   SafeAreaView,
@@ -9,13 +9,13 @@ import {
 import {
   FlatList,
   TextInput,
-  
+
 } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
-import {collection, query, where, getDocs} from 'firebase/firestore'
+import { collection, query, where, getDocs,doc } from 'firebase/firestore'
 import { database } from '../../../firebase-config';
-import {useAuth} from '../../../firebase'
+import { useAuth } from '../../../firebase'
 
 //new
 import { Product } from './Product';
@@ -23,64 +23,65 @@ import { Product } from './Product';
 
 
 import Slider from './Slider'
-const {width} = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 const cardWidth = width / 2 - 20;
 
-const HomeScreen = ({navigation}) => {
-  
+const HomeScreen = ({ navigation }) => {
+
   const [tour, settour] = useState([])
+  
+  /* Lấy toàn bộ Voucher  , where("id", "==", "DN01") */
+  async function getAllData() {
+    const q = query(collection(database, "vouchers"));
 
-/* Lấy toàn bộ Voucher  , where("id", "==", "DN01") */
-async function getAllData() {
-  const q = query(collection(database, "vouchers"));
-
-  const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q);
     let vouchers = [];
-    querySnapshot.forEach(doc=>{
-        vouchers.push(doc.data());
+    querySnapshot.forEach(doc => {
+      vouchers.push(doc.data());
+      
     })
     settour(vouchers)
     
-}
+  }
 
-useEffect(() => {
+  useEffect(() => {
     getAllData();
-}, [])
+  }, [])
 
-  
-  function header(){
+
+  function header() {
     return (
       <View>
         <View
-        style={{
-          marginTop: 10,
-          flexDirection: 'row',
-          paddingHorizontal: 20,
-        }}>
-        
-      </View>
-      <View style={styles.header}>
-        <View>
-          <Slider/>
-        </View> 
-      </View>
-      <Text style={{alignItems:'flex-start',alignSelf:'flex-start',fontWeight:'bold',fontSize:22,marginLeft:15}}> Sản phẩm</Text>
+          style={{
+            marginTop: 10,
+            flexDirection: 'row',
+            paddingHorizontal: 20,
+          }}>
+
+        </View>
+        <View style={styles.header}>
+          <View>
+            <Slider />
+          </View>
+        </View>
+        <Text style={{ alignItems: 'flex-start', alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 22, marginLeft: 15 }}> Sản phẩm</Text>
       </View>
     )
   }
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <FlatList
-      ListHeaderComponent={header}
-      style={styles.productsList}
-      contentContainerStyle={styles.productsListContainer}
-      data={tour}
-      renderItem={({item: product})=>{
-        return <Product {...product} 
-        info={product}/>
-      }}
-      
-    />
+        ListHeaderComponent={header}
+        style={styles.productsList}
+        contentContainerStyle={styles.productsListContainer}
+        data={tour}
+        renderItem={({ item: product }) => {
+          return <Product {...product}
+            info={product} />
+        }}
+
+      />
     </SafeAreaView>
   );
 };
@@ -99,10 +100,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   header: {
-    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 5,
   },
   inputContainer: {
     flex: 1,

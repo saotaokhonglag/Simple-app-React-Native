@@ -3,22 +3,25 @@ import { Text, Image, View, StyleSheet, TouchableOpacity, ScrollView } from 'rea
 import { useNavigation } from '@react-navigation/native'
 export function Product(info) {
   const navigation = useNavigation();
-  const { Ten, image, location, Gia, mota } = info;
+  const { Ten, image, Gia, Mota } = info;
   return (
     <TouchableOpacity onPress={() => {
       navigation.navigate("DetailsScreen",
         {
+            id: info.id,
             name: info.Ten,
             price:info.Gia,
             qty:0,
-            location:info.location,
-            description:info.mota
+            description:info.Mota,
+            quantity:info.Soluong
+            
         });
     }}>
       <ScrollView>
         <View style={styles.card}>
           <Image style={styles.thumb} source={require('../../../assets/images/DaNang.jpg')} />
           <Text style={{ marginLeft: 10,fontWeight:'bold',fontSize:16 }}>{info.Ten}</Text>
+          
           <Text style={styles.price}>Giá: {info.Gia} VND</Text>
 
         </View>
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
       width: 0,
     },
     elevation: 1,
-    marginVertical: 20,
+    marginVertical: 5,
 
   },
   thumb: {

@@ -22,9 +22,9 @@ import { Cart } from '../screens/CartScreen/Cart';
 import EditCartScreen from '../screens/CartScreen/EditCartcreen'
 import HomeAD from '../screens/Admin/HomeScreen';
 import AddVoucher from '../screens/Admin/AddVoucher';
-import GetAllVoucher from '../screens/Admin/GetAllVoucher';
 import Account from '../screens/Admin/AccountScreen/Account';
 import CheckOutScreen from '../screens/CheckOutScreen/CheckOutScreen'
+
 const MainStack = createStackNavigator();
 const Main = () => {
   return (
@@ -34,7 +34,7 @@ const Main = () => {
       }}>
          <MainStack.Screen name="SignInScreen" component={SignInScreen} />
       <MainStack.Screen name="MainTabs" component={MainTabs} />
-     
+      
       <MainStack.Screen name="SignUpScreen" component={SignUpScreen} />
       <MainStack.Screen name="ForgotPassWordScreen" component={ForgotPasswordScreen} />
       <MainStack.Screen name="DetailAccount" component={DetailsAcc} />
@@ -66,7 +66,7 @@ const MainTabs = () => {
     >
       {/* these icons using Ionicons */}
       <Tabs.Screen
-        name="Home"
+        name="Trang chủ"
         component={HomeScreen}
         options={({ navigation }) => ({
           headerTitleStyle: styles.headerTitle,
@@ -76,13 +76,25 @@ const MainTabs = () => {
         })}
         
       />
+      {/* <Tabs.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="Tìm kiếm" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"search-outline"} />
+          ),
+        }}
+      /> */}
      
       <Tabs.Screen
-        name="Cart"
+        name="Giỏ hàng"
         component={Cart}
         options={{
           tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="Cart" />
+            <TabBarText focused={focused} title="Giỏ hàng" />
           ),
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} icon={"cart-outline"} />
@@ -90,11 +102,11 @@ const MainTabs = () => {
         }}
       />
       <Tabs.Screen
-        name="Account"
+        name="Tài khoản"
         component={AccountScreen}
         options={{
           tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="Account" />
+            <TabBarText focused={focused} title="Tài khoản" />
           ),
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} icon={"person"} />

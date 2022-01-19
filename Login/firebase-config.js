@@ -5,14 +5,13 @@ import { getDatabase} from "firebase/database";
 import {collection, getDocs, getFirestore} from "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC4Glpz9UkiabwYXuwthTKcsgBx6GIaVjg",
-  authDomain: "loginexpo-51cc1.firebaseapp.com",
-  projectId: "loginexpo-51cc1",
-  storageBucket: "loginexpo-51cc1.appspot.com",
-  messagingSenderId: "280156379389",
-  appId: "1:280156379389:web:71bfddf3f7bce83f240694",
-  databaseURL: "https://loginexpo-51cc1-default-rtdb.firebaseio.com",
-  storageBucket: "loginexpo-51cc1.appspot.com",
+  apiKey: "AIzaSyAKmt50wPzgbdXuX1UtvgR47Oxa5Sge-vA",
+  authDomain: "reactnative-1dfd8.firebaseapp.com",
+  projectId: "reactnative-1dfd8",
+  storageBucket: "reactnative-1dfd8.appspot.com",
+  messagingSenderId: "537975960960",
+  appId: "1:537975960960:web:6b15832176e9787bebfd65",
+  measurementId: "G-MK5VR235J6"
 };
 // Initialize Firebase
 

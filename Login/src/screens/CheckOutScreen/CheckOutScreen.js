@@ -24,15 +24,20 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../firebase'
 const { width } = Dimensions.get('screen');
 const cardWidth = width / 2 - 20;
-
+import {
+  getAuth,
+  onAuthStateChanged,
+} from 'firebase/auth';
 const CheckOutScreen = ({ item }) => {
+  const [userid, setuserid] = useState("")
   const navigation = useNavigation();
-  const [tour, settour] = useState([])
+  const [tour, setTour] = useState([])
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [numP, setNumP] = useState('')
   const [currentDate, setCurrentDate] = useState('');
   const [total,setTotal]=useState('')
+  const [curCheck,setCurCheck]=useState('')
 
   useEffect(() => {
     var date = new Date().getDate(); //Current Date
@@ -43,47 +48,64 @@ const CheckOutScreen = ({ item }) => {
     var sec = new Date().getSeconds(); //Current Seconds
     setCurrentDate(
       date + '/' + month + '/' + year
-      + ' ' + hours + ':' + min + ':' + sec
+      // + ' ' + hours + ':' + min + ':' + sec
     );
+    setCurCheck(
+      date + '/' + month + '/' + year
+      + ' ' + hours + ':' + min + ':' + sec
+    )
   }, []);
 
   const handleCheckOut = () => {
     try{
-      const docRef = addDoc(collection(database, "donhang"), {
-        ngaytao: currentDate,
-        id_KhachHang: currentUser.id,
-        tongtien: total
+      const docRef = addDoc(collection(database, "DonHang"), {
+        TenKhachHang: username,
+        SDT: numP,
+        NgayTao: currentDate,
+        TongTien: total,
+        id_Check:curCheck,
+        id_KhachHang:userid,
       });
       tour.forEach((item) => {
         
-        const docRef1 = addDoc(collection(database, "CT_donhang"), {
-          id_voucher: item.Name,
-          gia: item.Price,
-          soluong: item.Quantity,
-          id_KhachHang: currentUser.uid,
-          id_Voucher: item.id
+        const docRef1 = addDoc(collection(database, "ChiTietDonHang"), {
+          
+          TenVoucher: item.TenVoucher,
+          Gia: item.Gia,
+          SoLuong: item.SoLuong,
+          id_Check:curCheck
         });
         
       });
+      alert("Thanh toan thanh cong ", docRef.id);
     }
     catch (error) {
       alert(error);
     }
 
   }
-  /* Lấy toàn bộ Voucher */
   async function getAllData() {
-    const q = query(collection(database, "GioHang"),where("id_KhachHang","==",currentUser.uid));
-
-    const querySnapshot = await getDocs(q);
+    try {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const id = user.uid;
+          setuserid(id) 
+          alert(userid);
+        }
+      });
+      // where của câu truy vấn:  , where("IDuser", "==", userid)
+    const q = query(collection(database, "GioHang"), where("id_KhachHang", "==",userid));
+     const querySnapshot = await getDocs(q);
     let vouchers = [];
     querySnapshot.forEach(doc => {
-      vouchers.push(doc.data());
+      vouchers.push({...doc.data(), id: doc.id});
     })
-    settour(vouchers)
-
+    setTour(vouchers)
+    } catch (error) {
+      alert(error)
+    } 
   }
-
   useEffect(() => {
     getAllData();
   }, [])
@@ -91,11 +113,14 @@ const CheckOutScreen = ({ item }) => {
   function header() {
     return (
       <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center' }}>
-        <Icon name="chevron-back-outline"
-                type="ionicon"
-                onPress={navigation.goBack}
-                size={35}
-                style={styles.lineLeft}></Icon>
+        <View style={styles.icon}>
+                <Icon name="chevron-back-outline"
+                    type="ionicon"
+                    size={30}
+                    
+                    onPress={navigation.goBack}
+                    />
+                </View>
         <Text style={styles.lineCenter}>Hoàn tất đơn hàng</Text>
       </View>
     )
@@ -103,7 +128,7 @@ const CheckOutScreen = ({ item }) => {
   function footer() {
     let totalPrice = 0;
     tour.forEach((item) => {
-      totalPrice += item.Quantity * item.Price;
+      totalPrice += item.SoLuong * item.Gia;
     });
     useEffect(()=>{
       setTotal(totalPrice)
@@ -121,16 +146,12 @@ const CheckOutScreen = ({ item }) => {
           value={username}
           setvalue={setUsername}
         />
-        <CustomInput
-          placeholder="Email"
-          value={email}
-          setvalue={setEmail}
-        />
+        
         <CustomInput
           placeholder="NumberPhone"
           value={numP}
           setvalue={setNumP}
-          secureTextEntry={true}
+          
         />
 
         
@@ -175,7 +196,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   header: {
-    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,

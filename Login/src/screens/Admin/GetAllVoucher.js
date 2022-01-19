@@ -7,7 +7,7 @@ const GetAllVoucher =  () => {
 const [tour, settour] = useState([])
 
 async function getAllData() {
-    const query = await getDocs(collection(database, "SessionCart"));
+    const query = await getDocs(collection(database, "vouchers"));
     let vouchers = [];
     query.forEach(doc=>{
         vouchers.push(doc.data());

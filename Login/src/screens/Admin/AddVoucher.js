@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, KeyboardAvoidingView, ScrollView, Image, TouchableOpacity, Button, StyleSheet } from 'react-native'
+import { View, Text, KeyboardAvoidingView, ScrollView, Image, TouchableOpacity, Button ,StyleSheet} from 'react-native'
 import { COLORS } from '../../constants/theme'
 import CustomInput from '../../components/CustomInput'
 import { database } from '../../../firebase'
@@ -9,13 +9,13 @@ import CustomButton from '../../components/CustomButton';
 import * as ImagePicker from 'expo-image-picker';
 import { Icon } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
-const AddVoucher = ({ route }) => {
-    const navigation = useNavigation()
+const AddVoucher = ({  route }) => {
+    const navigation=useNavigation()
     const [curentVoucherTitle, setcurentVoucherTitle] = useState('')
 
     const [price, setprice] = useState('')
-    const [status, setstatus] = useState('')
-    const [description, setdescription] = useState('')
+    const [quantity, setQuantity] = useState()
+    const [description, setdescription] = useState()
     const db = getFirestore();
     const storage = getStorage();
 
@@ -24,7 +24,7 @@ const AddVoucher = ({ route }) => {
     const [textadd, settextadd] = useState('+add image')
 
     let [selectedImage, setSelectedImage] = useState(null);
-
+    
     /* Pick image */
     const pickImage = async () => {
 
@@ -48,8 +48,8 @@ const AddVoucher = ({ route }) => {
             const docRef = addDoc(collection(db, "vouchers"), {
                 Ten: curentVoucherTitle,
                 Gia: price,
-                Soluong: status,
-                mota: description,
+                Soluong: quantity,
+                Mota: description,
                 imgUrl: imgUrl
             });
             alert("Đã thêm Voucher");
@@ -58,13 +58,13 @@ const AddVoucher = ({ route }) => {
             setstatus('')
             setdescription('')
         } catch (e) {
-            alert('Lỗi: ' + e)
+           alert('Lỗi: '+e)
         }
     }
     return (
         <KeyboardAvoidingView style={{
             flex: 1,
-
+            
         }}>
             <ScrollView style={{
                 flex: 1,
@@ -72,16 +72,16 @@ const AddVoucher = ({ route }) => {
                 width: '100%',
                 marginTop: 30
             }}>
-
+                
                 <View style={{ padding: 20 }}>
-                    <View style={styles.icon}>
-                        <Icon name="chevron-back-outline"
-                            type="ionicon"
-                            size={30}
-
-                            onPress={navigation.goBack}
-                        />
-                    </View>
+                <View style={styles.icon}>
+                <Icon name="chevron-back-outline"
+                    type="ionicon"
+                    size={30}
+                    
+                    onPress={navigation.goBack}
+                    />
+                </View>
                     <Text style={{ fontSize: 20, textAlign: 'center', color: COLORS.black }}>
                         Add Voucher
                     </Text>
@@ -120,21 +120,21 @@ const AddVoucher = ({ route }) => {
                         value={price}
                         keyboardType='numeric'
                         setvalue={setprice}
-                        maxLength={9}
-                    />
+                        maxLength = {9}
+                        />
 
                     <CustomInput
                         placeholder="Số lượng"
-                        value={status}
-                        setvalue={setstatus}
+                        value={quantity}
+                        setvalue={setQuantity} 
                         keyboardType='numeric'
-                        maxLength={3} />
+                        maxLength = {3}/>
 
-                    <CustomInput
+                        <CustomInput
                         placeholder="Mô tả"
                         value={description}
-                        setvalue={setdescription}
-                        multiline={true} />
+                        setvalue={setdescription} 
+                        multiline={true}/>
 
 
                     <CustomButton
@@ -148,11 +148,11 @@ const AddVoucher = ({ route }) => {
         </KeyboardAvoidingView>
     )
 }
-const styles = StyleSheet.create({
-    icon: {
-        alignItems: 'flex-start',
-        alignSelf: 'flex-start',
-        marginTop: 10,
+const styles=StyleSheet.create({
+    icon:{
+        alignItems:'flex-start',
+        alignSelf:'flex-start',
+        marginTop:10,
     }
 })
 export default AddVoucher

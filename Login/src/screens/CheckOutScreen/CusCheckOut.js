@@ -4,16 +4,16 @@ import { useNavigation } from '@react-navigation/native'
 
 export function CusCheckOut({ info }) {
   const navigation = useNavigation();
-  const { Name, Price, IDuser, IdCart, Quantity } = info;
+  const {TenVoucher, Gia, id_KhachHang, SoLuong ,id } = info;
   
   return (
     <ScrollView>
       <View style={styles.cartLine}>
         <View style={{ marginLeft: 20 ,marginTop:10}}>
-          <Text style={styles.lineLeft}>{info.Name}</Text>
-          <Text style={styles.lineLeft}>Số lượng: {info.Quantity}</Text>
-          <Text style={styles.lineLeft}>Thành tiền: {info.Quantity * info.Price}</Text>
-          <Text style={styles.lineLeft}>Giá: {info.Price}</Text>
+          <Text style={styles.lineLeft}>{info.TenVoucher}</Text>
+          <Text style={styles.lineLeft}>Số lượng: {info.SoLuong}</Text>
+          <Text style={styles.lineLeft}>Thành tiền: {info.SoLuong * info.Gia}</Text>
+          <Text style={styles.lineLeft}>Giá: {info.Gia}</Text>
           <View style={{flex: 1, height: 1, backgroundColor: 'black',width:'100%'}} />
         </View>
       </View>

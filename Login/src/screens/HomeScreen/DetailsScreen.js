@@ -10,45 +10,19 @@ import {
 } from 'react-native';
 import { AntDesign } from "@expo/vector-icons";
 
-
+import { Icon } from 'react-native-elements';
 import { database } from '../../../firebase-config'
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection,doc } from 'firebase/firestore'
 import { ref } from 'firebase/database';
+import { useAuth } from '../../../firebase'
 import { useNavigation } from '@react-navigation/native';
-import {Icon} from 'react-native-elements'
-import {useAuth, auth} from '../../../firebase'
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-} from 'firebase/auth';
-
 const DetailsScreen = ({ route }) => {
-
+  const currentUser = useAuth();
   const navigation = useNavigation();
   const item = route.params;
   const [PreviewUrl, setPreviewUrl] = useState();
-  const [userId, setuserId] = useState('')
-  async function id() {
-    const user = await auth.currentUser();
-    if (user) {
-      alert(user.uid);
-      setuserId(user.uid)
-    } else {
-      alert('no user signin')
-    }
-  }
 
-  // const [product, setProduct] = useState({});
-  // const [qty,setQty] = useState({});
-  // // useEffect(()=>{
-  // //   setQty(product.qty++);[]
-  // // })
+
 
   const [curPrice, setCurPrice] = useState(0)
 
@@ -70,21 +44,27 @@ const DetailsScreen = ({ route }) => {
       alert('Vui lòng chọn số lượng nhiều hơn 1')
     }
     else {
-      if (userId == null) {
-        navigation.navigate('SignInScreen')
+      if(item.qty>item.quantity){
+        alert('khong du so luong')
+
       }
-      else {
-        try {
-              const addSsCart = addDoc(collection(database, 'GioHang'), {
-                id_KhachHang: userId,
-                TenVoucher: item.name,
-                Gia: item.price,
-                soluong: item.qty,
-                thanhtien: curPrice
-              });
-              alert('Add to cart successfully!')
-        } catch (error) {
-          alert(error);
+      else{
+        
+        if (currentUser == null) {
+          navigation.navigate('SignInScreen')
+        }
+        else {
+          try {
+            const addSsCart = addDoc(collection(database, 'GioHang'), {
+              id_KhachHang: currentUser.uid,
+              TenVoucher: item.name,
+              Gia: item.price,
+              SoLuong: item.qty
+            });
+            alert('Add to cart successfully!')
+          } catch (error) {
+            alert(error);
+          }
         }
       }
 
@@ -96,13 +76,13 @@ const DetailsScreen = ({ route }) => {
 
         <View style={styles.infoContainer}>
         <View style={styles.icon}>
-            <Icon name="chevron-back-outline"
-              type="ionicon"
-              size={30}
-
-              onPress={navigation.goBack}
-            />
-          </View>
+                <Icon name="chevron-back-outline"
+                    type="ionicon"
+                    size={30}
+                    
+                    onPress={navigation.goBack}
+                    />
+                </View>
           <Image
             style={styles.image}
             source={require('../../../assets/images/DaNang.jpg')}
@@ -111,9 +91,8 @@ const DetailsScreen = ({ route }) => {
           {/* <View style={{backgroundColor:'#F4A460'}}> */}
           <View >
           <Text style={styles.name}>{item.name}</Text>
-          
+          <Text style={styles.description}>{item.mota}</Text>
           <Text style={styles.description}>{item.description}</Text>
-          <Text style={styles.location}>Địa điểm: {item.location}</Text>
           <Text style={styles.location}>Giá: {item.price}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start',marginBottom:10 }}>
             <Text style={{fontSize:16,fontWeight:'300'}}>Số lượng: </Text>
@@ -154,7 +133,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   infoContainer: {
-    padding: 16,
+    padding: 15,
     backgroundColor:'#FFEFD5'
   },
   name: {
@@ -178,7 +157,7 @@ const styles = StyleSheet.create({
   icon:{
     alignItems: 'flex-start',
     alignSelf: 'flex-start',
-    marginTop: 10,
+    marginBottom:5
   }
 });
 
